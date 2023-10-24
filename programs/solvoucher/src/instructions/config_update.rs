@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 
+use crate::errors;
 use crate::state::Config;
 use crate::utils::ConfigState;
 
@@ -13,7 +14,7 @@ pub struct ConfigUpdate<'info> {
     mut,
     seeds = ["config".as_bytes(), config_id.as_bytes()],
     bump,
-    has_one = admin
+    has_one = admin @errors::ErrorCode::NotAuthorized
     )]
     pub config: Account<'info, Config>,
 }

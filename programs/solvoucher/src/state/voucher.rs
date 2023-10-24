@@ -11,5 +11,5 @@ pub struct Voucher {
 }
 
 impl Voucher {
-    pub const LEN: usize = std::mem::size_of::<Voucher>() + 8;
+    pub const LEN: usize = std::mem::size_of::<Voucher>() + 800;
 }

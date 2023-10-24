@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 
+use crate::errors;
 use crate::state::Config;
 
 #[derive(Accounts)]
@@ -12,8 +13,8 @@ pub struct ConfigDelete<'info> {
     mut,
     seeds = ["config".as_bytes(), config_id.as_bytes()],
     bump,
-    has_one = admin,
-    constraint = config.vouchers_minted == config.vouchers_burned
+    has_one = admin @errors::ErrorCode::NotAuthorized,
+    constraint = config.vouchers_minted == config.vouchers_burned @errors::ErrorCode::NotAllVouchersBurned
     )]
     pub config: Account<'info, Config>,
 }

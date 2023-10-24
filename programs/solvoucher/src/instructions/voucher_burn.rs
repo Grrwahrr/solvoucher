@@ -14,14 +14,14 @@ pub struct VoucherBurn<'info> {
     mut,
     seeds = ["config".as_bytes(), config_id.as_bytes()],
     bump,
-    has_one = admin,
-    constraint = config.state == ConfigState::Burning
+    has_one = admin @errors::ErrorCode::NotAuthorized,
+    constraint = config.state == ConfigState::Burning @errors::ErrorCode::ConfigStateMustBeBurning
     )]
     pub config: Account<'info, Config>,
 
     #[account(
     mut,
-    seeds = ["voucher".as_bytes(), config.key().as_ref(), &voucher_id.to_le_bytes()],
+    seeds = ["voucher".as_bytes(), config_id.as_bytes(), &voucher_id.to_le_bytes()],
     bump,
     close = admin
     )]
@@ -29,7 +29,7 @@ pub struct VoucherBurn<'info> {
 
     #[account(
     mut,
-    seeds = ["owner_to_voucher".as_bytes(), config.key().as_ref(), voucher.owner.as_ref()],
+    seeds = ["owner_to_voucher".as_bytes(), config_id.as_bytes(), voucher.owner.as_ref()],
     bump,
     close = admin
     )]

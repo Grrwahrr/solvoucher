@@ -14,13 +14,13 @@ pub struct VoucherMint<'info> {
     mut,
     seeds = ["config".as_bytes(), config_id.as_bytes()],
     bump,
-    constraint = config.state == ConfigState::Minting
+    constraint = config.state == ConfigState::Minting @errors::ErrorCode::ConfigStateMustBeMinting
     )]
     pub config: Account<'info, Config>,
 
     #[account(
     init,
-    seeds = ["voucher".as_bytes(), config.key().as_ref(), &config.vouchers_minted.to_le_bytes()],
+    seeds = ["voucher".as_bytes(), config_id.as_bytes(), &config.vouchers_minted.to_le_bytes()],
     bump,
     payer = payer,
     space = Voucher::LEN
@@ -29,7 +29,7 @@ pub struct VoucherMint<'info> {
 
     #[account(
     init,
-    seeds = ["owner_to_voucher".as_bytes(), config.key().as_ref(), payer.key().as_ref()],
+    seeds = ["owner_to_voucher".as_bytes(), config_id.as_bytes(), payer.key().as_ref()],
     bump,
     payer = payer,
     space = OwnerToVoucher::LEN
