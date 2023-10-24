@@ -7,7 +7,7 @@ use crate::utils::ConfigState;
 #[derive(Accounts)]
 #[instruction(config_id: String, state: ConfigState)]
 pub struct ConfigUpdate<'info> {
-    #[account(mut)]
+    #[account()]
     pub admin: Signer<'info>,
 
     #[account(
@@ -22,7 +22,7 @@ pub struct ConfigUpdate<'info> {
 pub fn handler(ctx: Context<ConfigUpdate>, _config_id: String, state: ConfigState) -> Result<()> {
     // Update the data in the config account
     let config = &mut ctx.accounts.config;
-    config.state = state;
+    config.state = state; //TODO any state or no going backwards to Inactive / Minting
 
     //TODO consider upgradeable admin
 

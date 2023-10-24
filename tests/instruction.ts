@@ -23,3 +23,25 @@ export const initialize = async (program: Program<Solvoucher>, txPayer: anchor.w
 
     return await program.account.config.fetch(accConfig);
 }
+
+export const updateConfig = async (program: Program<Solvoucher>, txPayer: anchor.web3.Signer, accConfig: anchor.web3.PublicKey, collectionName1: string, expectedError: string) => {
+    let tx;
+    try {
+        tx = await program.methods
+            .configUpdate(collectionName1, { minting: {} })
+            .accounts({
+                admin: txPayer.publicKey,
+                config: accConfig,
+            })
+            .signers([txPayer])
+            .rpc();
+    }
+    catch (e) {
+        if (expectedError === "" || !e.toString().includes(expectedError)) {
+            console.log("Error: ", e, " TX: ", tx);
+        }
+        return undefined;
+    }
+
+    return await program.account.config.fetch(accConfig);
+}

@@ -3,7 +3,7 @@ import { Program } from "@coral-xyz/anchor";
 import { Solvoucher } from "../target/types/solvoucher";
 import {deriveConfig} from "./pda";
 import {expect} from "chai";
-import {initialize} from "./instruction";
+import {initialize, updateConfig} from "./instruction";
 
 describe("solvoucher", () => {
   // Configure the client to use the local cluster.
@@ -36,7 +36,15 @@ describe("solvoucher", () => {
     const config = await initialize(program, accAlice, accConfig, collectionName1, "");
     expect(config).to.not.be.undefined;
 
-    const duplicate = await initialize(program, accBob, accConfig, collectionName1, "already in use");
+    const duplicate = await initialize(program, accBob, accConfig, collectionName1, "0x0");
     expect(duplicate).to.be.undefined;
+  });
+
+  it("Owner can update config. Others can not.", async () => {
+    const fails = await updateConfig(program, accBob, accConfig, collectionName1, "NotAuthorized.");
+    expect(fails).to.be.undefined;
+
+    const works = await updateConfig(program, accAlice, accConfig, collectionName1, "");
+    expect(works).to.not.be.undefined;
   });
 });
