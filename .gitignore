@@ -1,0 +1,8 @@
+/.idea
+/target
+/node_modules
+.anchor
+.DS_Store
+**/*.rs.bk
+test-ledger
+.yarn
