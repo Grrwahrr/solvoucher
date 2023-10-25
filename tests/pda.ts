@@ -10,8 +10,14 @@ export const deriveConfig = (program: Program<Solvoucher>, collectionName: strin
         program.programId
     );
 
-export const deriveTeacherProfile = (program: Program<Solvoucher>, payer: anchor.web3.PublicKey) =>
+export const deriveVoucher = (program: Program<Solvoucher>, collectionName: string, offset: number) =>
     anchor.web3.PublicKey.findProgramAddressSync(
-        [textEncoder.encode("teacher"), payer.toBuffer()],
+        [textEncoder.encode("voucher"), textEncoder.encode(collectionName), new anchor.BN(offset).toArrayLike(Buffer, "le", 4)],
+        program.programId
+    );
+
+export const deriveOwnerToVoucher = (program: Program<Solvoucher>, collectionName: string, payer: anchor.web3.PublicKey) =>
+    anchor.web3.PublicKey.findProgramAddressSync(
+        [textEncoder.encode("owner_to_voucher"), textEncoder.encode(collectionName), payer.toBuffer()],
         program.programId
     );

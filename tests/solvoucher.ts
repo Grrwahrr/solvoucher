@@ -1,9 +1,9 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Solvoucher } from "../target/types/solvoucher";
-import {deriveConfig} from "./pda";
+import {deriveConfig, deriveOwnerToVoucher, deriveVoucher} from "./pda";
 import {expect} from "chai";
-import {initialize, updateConfig} from "./instruction";
+import {initialize, mintVoucher, updateConfig} from "./instruction";
 
 describe("solvoucher", () => {
   // Configure the client to use the local cluster.
@@ -21,6 +21,12 @@ describe("solvoucher", () => {
   const accCharlie = anchor.web3.Keypair.generate();
 
   const [accConfig, bumpConfig] = deriveConfig(program, collectionName1);
+
+  const [accVoucher1, bumpVoucher1] = deriveVoucher(program, collectionName1, 0);
+  const [accVoucher2, bumpVoucher2] = deriveVoucher(program, collectionName1, 1);
+
+  const [accOwnerToVoucher1, bumpOwnerToVoucher1] = deriveOwnerToVoucher(program, collectionName1, accBob.publicKey);
+  const [accOwnerToVoucher2, bumpOwnerToVoucher2] = deriveOwnerToVoucher(program, collectionName1, accAlice.publicKey);
 
   it("Airdrop works.", async () => {
     const airdrop1 = await program.provider.connection.requestAirdrop(accAlice.publicKey, 1_000_000_000);// 1 SOL
@@ -46,5 +52,13 @@ describe("solvoucher", () => {
 
     const works = await updateConfig(program, accAlice, accConfig, collectionName1, "");
     expect(works).to.not.be.undefined;
+  });
+
+  it("Alice and Bob can mint vouchers.", async () => {
+    const voucher1 = await mintVoucher(program, accBob, accConfig, accVoucher1, accOwnerToVoucher1, collectionName1, "ABCDEFG", "");
+    expect(voucher1).to.not.be.undefined;
+
+    const voucher2 = await mintVoucher(program, accAlice, accConfig, accVoucher2, accOwnerToVoucher2, collectionName1, "ABCDEFG", "");
+    expect(voucher2).to.not.be.undefined;
   });
 });
