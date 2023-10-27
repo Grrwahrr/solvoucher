@@ -8,7 +8,7 @@ use anchor_lang::prelude::*;
 
 use crate::instructions::*;
 
-declare_id!("DX8ZhZ1nqr1LRt8hHd3aeobqpg9FgvCJRSBwG9M4Y7DA");
+declare_id!("DtDGo9RPBKmVcFKBxBTMzVs6ckQ5bRnrzW1FPYPEEZAq");
 
 #[program]
 pub mod solvoucher {
